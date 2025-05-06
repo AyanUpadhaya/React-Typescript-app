@@ -44,8 +44,12 @@ function App() {
         throw new Error(`HTTP error! status: ${response.status}`);
       const json = await response.json();
       settasks((prev) => [...prev, json]);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+       if (e instanceof Error) {
+         setError(e.message);
+       } else {
+         setError("An unexpected error occurred.");
+       }
     } finally {
       setLoading(false);
     }
@@ -61,8 +65,12 @@ function App() {
         throw new Error(`HTTP error! status: ${response.status}`);
       await response.json();
       settasks(tasks.filter((item)=>item.id !== id));
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+       if (e instanceof Error) {
+         setError(e.message);
+       } else {
+         setError("An unexpected error occurred.");
+       }
     } finally {
       setLoading(false);
     }
@@ -72,12 +80,22 @@ function App() {
     try {
       setLoading(true);
       const response = await fetch("http://localhost:5000/api/tasks");
-      if (!response.ok)
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `Request failed with status ${response.status}: ${
+            errorText || response.statusText
+          }`
+        );
+      }
       const json = await response.json();
       settasks(json);
-    } catch (e: any) {
-      setError(e.message);
+    } catch (e) {
+       if (e instanceof Error) {
+         setError(e.message);
+       } else {
+         setError("An unexpected error occurred.");
+       }
     } finally {
       setLoading(false);
     }
