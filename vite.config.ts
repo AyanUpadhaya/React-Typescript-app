@@ -5,6 +5,9 @@ import { defineConfig } from "vite";
 
 // https://vite.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    exclude: ["lucide-react", "@radix-ui/react-select"],
+  },
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
